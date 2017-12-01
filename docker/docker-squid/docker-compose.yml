@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  cache:
+    #image: squid
+    build: ./squid
+    restart: always
+    network_mode: "bridge"
+    ports:
+      # Take care: Proxmox VE/SPICE proxy is also on port 3128
+      - "$BIND_PORT:3128"
+    env_file:
+      - .env
+    volumes:
+      - "cache:/var/cache/squid"
+
+volumes:
+   cache:
