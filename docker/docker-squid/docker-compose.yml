@@ -2,8 +2,8 @@ version: '2'
 
 services:
   cache:
-    #image: squid
-    build: ./squid
+    image: homelan/docker-squid
+    #build: ./squid
     restart: always
     network_mode: "bridge"
     ports:

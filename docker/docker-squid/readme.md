@@ -23,7 +23,11 @@ This is a `Dockerfile` to create a [Docker](https://www.docker.com/) image/conta
 
 ## Installation
 
-TBD
+On [hub.docker.com](https://hub.docker.com/r/homelan/docker-squid/) is the offical docker repository with automated build of the image. The recommended method to pull the images is to use
+
+```console
+$ docker pull homelan/docker-squid
+```
 
 
 ## Quickstart
@@ -35,11 +39,12 @@ version: '2'
 
 services:
   cache:
-    #image: squid
-    build: ./squid
+    image: homelan/docker-squid
+    #build: ./squid
     restart: always
     network_mode: "bridge"
     ports:
+      # Take care: Proxmox VE/SPICE proxy is also on port 3128
       - "$BIND_PORT:3128"
     env_file:
       - .env
@@ -59,10 +64,10 @@ $ docker-compose up -d
 Alternatively, you can use the docker syntax, like:
 
 ```console
-$ docker run --name squid -d --restart=always \
+$ docker run --name squid_cache -d --restart=always \
   --publish 3128:3128 \
   --volume /path/to/squid/cache:/var/spool/squid \
-  dockersquid_cache
+  docker pull homelan/docker-squid
 ```
 
 
@@ -79,8 +84,7 @@ $ docker-compose exec cache squid -k parse
 respectively:
 
 ```console
-$ docker run -ti --rm --name squid \
-  dockersquid_cache squid -k parse
+$ docker exec squid_cache squid -k parse
 ```
 
 which both show the output similar this:
@@ -145,7 +149,7 @@ $ docker-compose exec cache sh
 or docker's way:
 
 ```console
-$ docker exec -it dockersquid_cache sh
+$ docker exec -it squid_cache sh
 ```
 
 > *Note, [Alpine Linux](https://hub.docker.com/_/alpine/) is built arround [BusyBox](https://busybox.net/), hence `console` isn't installed by default.*
@@ -177,10 +181,10 @@ $ docker run --name squid -d --restart=always \
   --publish 3128:3128 \
   --volume /path/to/squid.conf:/etc/squid/squid.conf \
   --volume /path/to/squid/cache:/var/cache/squid \
-   dockersquid_cache
+  homelan/docker-squid
 ```
 
-or changed it on the `docker-compose.yml` file. 
+or change it on the `docker-compose.yml` file. 
 
 To reload the Squid configuration on a running instance you can send than the `HUP` signal to the container.
 
